@@ -1,63 +1,62 @@
 package model.pieces;
 
 import model.Movement;
-import model.position.Column;
-import model.position.Row;
-import model.position.Square;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BishopTest {
-    private Bishop bishop;
+    private static Piece bishop ;
+    private static MovementsBuilder movementsBuilder;
 
-    @BeforeEach
-    public void setUp() {
+    @BeforeAll
+    public static void setUp() {
         bishop = new Bishop(Colors.WHITE);
+        movementsBuilder = new MovementsBuilder();
     }
 
-    @Test
-    public void shouldNotAllowMoveInSameRow() {
-        Movement movement = new Movement(new Square(Column.A, Row.TWO), new Square(Column.H, Row.TWO));
-        assertFalse(bishop.isLegal(movement));
+    @ParameterizedTest
+    @MethodSource("provideMovement")
+    public void testMovement(Movement movement, boolean expected) {
+        assertEquals(bishop.isLegal(movement), expected);
     }
 
-    @Test
-    public void shouldNotAllowMoveInSameColumn() {
-        Movement movement = new Movement(new Square(Column.A, Row.ONE), new Square(Column.A, Row.TWO));
-        assertFalse(bishop.isLegal(movement));
-    }
+    private static Stream<Arguments> provideMovement() {
+        return Stream.of(
+                Arguments.of(movementsBuilder.rightRowOneSquare(), false),
+                Arguments.of(movementsBuilder.rightRow(), false),
+                Arguments.of(movementsBuilder.leftRowOneSquare(), false),
+                Arguments.of(movementsBuilder.leftRow(), false),
 
-    @Test
-    public void shouldAllowMoveInDiagonal() {
-        Movement movement = new Movement(new Square(Column.C, Row.ONE), new Square(Column.E, Row.THREE));
-        assertTrue(bishop.isLegal(movement));
-    }
+                Arguments.of(movementsBuilder.upColumn(), false),
+                Arguments.of(movementsBuilder.upColumnsOneSquare(), false),
+                Arguments.of(movementsBuilder.downColumn(), false),
+                Arguments.of(movementsBuilder.downColumnOneSquare(), false),
 
-    @Test
-    public void shouldAllowMoveInInverseDiagonal() {
-        Movement movement = new Movement(new Square(Column.C, Row.ONE), new Square(Column.B, Row.TWO));
-        assertTrue(bishop.isLegal(movement));
-    }
+                Arguments.of(movementsBuilder.upPrincipalDiagonal(), true),
+                Arguments.of(movementsBuilder.upPrincipalDiagonalOneSquare(), true),
+                Arguments.of(movementsBuilder.downPrincipalDiagonalOneSquare(), true),
+                Arguments.of(movementsBuilder.downPrincipalDiagonal(), true),
+                Arguments.of(movementsBuilder.upInverseDiagonal(), true),
+                Arguments.of(movementsBuilder.upInverseDiagonalOneSquare(), true),
+                Arguments.of(movementsBuilder.downInverseDiagonal(), true),
+                Arguments.of(movementsBuilder.downInverseDiagonalOneSquare(), true),
 
-    @Test
-    public void shouldAllowMoveInDiagonalDown() {
-        Movement movement = new Movement(new Square(Column.E, Row.SIX), new Square(Column.A, Row.TWO));
-        assertTrue(bishop.isLegal(movement));
-    }
+                Arguments.of(movementsBuilder.horseMovement1(), false),
+                Arguments.of(movementsBuilder.horseMovement2(), false),
+                Arguments.of(movementsBuilder.horseMovement3(), false),
+                Arguments.of(movementsBuilder.horseMovement4(), false),
+                Arguments.of(movementsBuilder.horseMovement5(), false),
+                Arguments.of(movementsBuilder.horseMovement6(), false),
+                Arguments.of(movementsBuilder.horseMovement7(), false),
+                Arguments.of(movementsBuilder.horseMovement8(), false),
 
-    @Test
-    public void shouldAllowMoveInInverseDiagonalDown() {
-        Movement movement = new Movement(new Square(Column.C, Row.SIX), new Square(Column.F, Row.THREE));
-        assertTrue(bishop.isLegal(movement));
+                Arguments.of(movementsBuilder.noMovement(), false)
+        );
     }
-
-    @Test
-    public void shouldNotAllowHorseMovement() {
-        Movement movement = new Movement(new Square(Column.A, Row.ONE), new Square(Column.B, Row.THREE));
-        assertFalse(bishop.isLegal(movement));
-    }
-
 }

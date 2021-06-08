@@ -1,7 +1,6 @@
 package model.pieces;
 
 import model.Movement;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class Knight extends Piece {
 
@@ -11,6 +10,6 @@ public class Knight extends Piece {
 
     @Override
     public boolean isLegal(Movement movement) {
-        throw new NotImplementedException();
+        return movement.isHorseMovement();
     }
 }

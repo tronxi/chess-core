@@ -1,7 +1,6 @@
 package model.pieces;
 
 import model.Movement;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class Pawn extends Piece {
 
@@ -11,6 +10,10 @@ public class Pawn extends Piece {
 
     @Override
     public boolean isLegal(Movement movement) {
-        throw new NotImplementedException();
+        if(this.isColor(Colors.WHITE)) {
+            return true;
+        } else {
+            return true;
+        }
     }
 }

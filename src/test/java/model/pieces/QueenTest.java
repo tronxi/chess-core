@@ -8,22 +8,22 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-class RookTest {
-    private static Piece rook ;
+class QueenTest {
+    private static Piece queen;
     private static MovementsBuilder movementsBuilder;
 
     @BeforeAll
     public static void setUp() {
-        rook = new Rook(Colors.WHITE);
+        queen = new Queen(Colors.WHITE);
         movementsBuilder = new MovementsBuilder();
     }
 
     @ParameterizedTest
     @MethodSource("provideMovement")
     public void testMovement(Movement movement, boolean expected) {
-        assertEquals(rook.isLegal(movement), expected);
+        assertEquals(queen.isLegal(movement), expected);
     }
 
     private static Stream<Arguments> provideMovement() {
@@ -38,14 +38,14 @@ class RookTest {
                 Arguments.of(movementsBuilder.downColumn(), true),
                 Arguments.of(movementsBuilder.downColumnOneSquare(), true),
 
-                Arguments.of(movementsBuilder.upPrincipalDiagonal(), false),
-                Arguments.of(movementsBuilder.upPrincipalDiagonalOneSquare(), false),
-                Arguments.of(movementsBuilder.downPrincipalDiagonalOneSquare(), false),
-                Arguments.of(movementsBuilder.downPrincipalDiagonal(), false),
-                Arguments.of(movementsBuilder.upInverseDiagonal(), false),
-                Arguments.of(movementsBuilder.upInverseDiagonalOneSquare(), false),
-                Arguments.of(movementsBuilder.downInverseDiagonal(), false),
-                Arguments.of(movementsBuilder.downInverseDiagonalOneSquare(), false),
+                Arguments.of(movementsBuilder.upPrincipalDiagonal(), true),
+                Arguments.of(movementsBuilder.upPrincipalDiagonalOneSquare(), true),
+                Arguments.of(movementsBuilder.downPrincipalDiagonalOneSquare(), true),
+                Arguments.of(movementsBuilder.downPrincipalDiagonal(), true),
+                Arguments.of(movementsBuilder.upInverseDiagonal(), true),
+                Arguments.of(movementsBuilder.upInverseDiagonalOneSquare(), true),
+                Arguments.of(movementsBuilder.downInverseDiagonal(), true),
+                Arguments.of(movementsBuilder.downInverseDiagonalOneSquare(), true),
 
                 Arguments.of(movementsBuilder.horseMovement1(), false),
                 Arguments.of(movementsBuilder.horseMovement2(), false),
@@ -57,6 +57,7 @@ class RookTest {
                 Arguments.of(movementsBuilder.horseMovement8(), false),
 
                 Arguments.of(movementsBuilder.noMovement(), false)
-                );
+        );
     }
+
 }

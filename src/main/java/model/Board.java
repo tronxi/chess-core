@@ -7,19 +7,23 @@ import model.exceptions.InvalidMovementException;
 import model.pieces.Piece;
 import model.position.Square;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Board {
     private final Map<Square, Piece> pieces;
+    private final Map<Colors, List<Piece>> wonPieces;
     private Colors turn;
 
     public Board() {
         turn = Colors.WHITE;
+
         pieces = new HashMap<>();
         pieces.putAll(new WhiteBuilder().initialPosition());
         pieces.putAll(new BlackBuilder().initialPosition());
+
+        wonPieces = new HashMap<>();
+        wonPieces.put(Colors.WHITE, new ArrayList<>());
+        wonPieces.put(Colors.BLACK, new ArrayList<>());
     }
 
     public void changePlayer() {
@@ -29,9 +33,10 @@ public class Board {
     public void move(Movement movement) throws InvalidMovementException {
         Piece origin = retrieveFromSquareWithColor(movement.getFrom(), this.turn);
         Optional<Piece> target = retrieveFromSquare(movement.getTo());
-        //if(!origin.isLegal(movement)) throw new InvalidMovementException();
+        if(!origin.isLegal(movement)) throw new InvalidMovementException();
         if(target.isPresent()) {
             if(target.get().isColor(this.turn.takeOther())) {
+                wonPieces.get(turn).add(pieces.get(movement.getTo()));
                 pieces.remove(movement.getFrom());
                 pieces.put(movement.getTo(), origin);
             } else {
@@ -56,4 +61,8 @@ public class Board {
     public Map<Square, Piece> getPieces() {
         return pieces;
     }
+    public Map<Colors, List<Piece>> getWonPieces() {
+        return wonPieces;
+    }
+
 }
