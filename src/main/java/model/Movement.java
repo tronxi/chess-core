@@ -1,12 +1,16 @@
 package model;
 
 import model.position.Square;
+import org.apache.commons.lang3.Validate;
 
 public class Movement {
-    private Square from;
-    private Square to;
+    private final Square from;
+    private final Square to;
 
     public Movement(Square from, Square to) {
+        Validate.notNull(from);
+        Validate.notNull(to);
+
         this.from = from;
         this.to = to;
     }
@@ -20,10 +24,19 @@ public class Movement {
     }
 
     public boolean isInRow() {
-        return this.from.isInRow(to);
+        return isDifferent() && this.from.isInRow(to);
     }
 
     public boolean isInColumn() {
-        return this.from.isInColumn(to);
+        return isDifferent() && this.from.isInColumn(to);
     }
+
+    public boolean isInDiagonal() {
+        return isDifferent() && this.from.isInDiagonal(to);
+    }
+
+    private boolean isDifferent() {
+        return !from.equals(to);
+    }
+
 }

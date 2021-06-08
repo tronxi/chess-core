@@ -24,6 +24,12 @@ public class Square {
         return this.column == square.column;
     }
 
+    public boolean isInDiagonal(Square square) {
+        int columnDifference = Math.abs(this.column.differenceBetween(square.column));
+        int rowDifference = Math.abs(this.row.differenceBetween(square.row));
+        return columnDifference == rowDifference;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
