@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class WhiteBuilder {
 
-    public Map<Square, Piece> build() {
+    public Map<Square, Piece> initialPosition() {
         Map<Square, Piece> pieces = new HashMap<>();
         Colors white = Colors.WHITE;
         pieces.put(new Square(Column.E, Row.ONE), new King(white));

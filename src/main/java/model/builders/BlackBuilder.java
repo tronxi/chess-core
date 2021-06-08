@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class BlackBuilder {
 
-    public Map<Square, Piece> build() {
+    public Map<Square, Piece> initialPosition() {
         Map<Square, Piece> pieces = new HashMap<>();
         Colors black = Colors.BLACK;
         pieces.put(new Square(Column.E, Row.EIGHT), new King(black));

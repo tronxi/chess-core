@@ -9,7 +9,7 @@ public enum Pieces {
     BISHOP("B"),
     ROOK("R");
 
-    private String initial;
+    private final String initial;
 
     Pieces(String initial) {
         this.initial = initial;

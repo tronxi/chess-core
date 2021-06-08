@@ -18,8 +18,8 @@ public class Board {
     public Board() {
         turn = Colors.WHITE;
         pieces = new HashMap<>();
-        pieces.putAll(new WhiteBuilder().build());
-        pieces.putAll(new BlackBuilder().build());
+        pieces.putAll(new WhiteBuilder().initialPosition());
+        pieces.putAll(new BlackBuilder().initialPosition());
     }
 
     public void changePlayer() {
