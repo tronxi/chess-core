@@ -1,7 +1,6 @@
 package model.pieces;
 
 import model.Movement;
-import model.colors.Colors;
 
 public class Rook extends Piece {
 

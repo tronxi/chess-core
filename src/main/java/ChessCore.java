@@ -15,8 +15,8 @@ public class ChessCore {
     public ChessCore() {
         Board board = new Board();
         List<Movement> movementList = Arrays.asList(
-                new Movement(new Square(Row.TWO, Column.E), new Square(Row.FOUR, Column.E)),
-                new Movement(new Square(Row.SEVEN, Column.E), new Square(Row.FIVE, Column.E))
+                new Movement(new Square(Column.E, Row.TWO), new Square(Column.E, Row.FOUR)),
+                new Movement(new Square(Column.E, Row.SEVEN), new Square(Column.E, Row.FIVE))
         );
         try {
             print(board.getPieces());
@@ -34,7 +34,7 @@ public class ChessCore {
         System.out.println("TABLERO");
         for(Row row : Row.values()) {
             for(Column column: Column.values()) {
-                Piece piece = pieces.get(new Square(row, column));
+                Piece piece = pieces.get(new Square(column, row));
                 if(piece != null) {
                     System.out.print("|" + piece + "|");
                 } else {

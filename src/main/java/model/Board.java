@@ -1,8 +1,8 @@
 package model;
 
-import model.colors.BlackBuilder;
-import model.colors.Colors;
-import model.colors.WhiteBuilder;
+import model.builders.BlackBuilder;
+import model.pieces.Colors;
+import model.builders.WhiteBuilder;
 import model.exceptions.InvalidMovementException;
 import model.pieces.Piece;
 import model.position.Square;

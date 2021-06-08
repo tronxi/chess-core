@@ -1,4 +1,4 @@
-package model.colors;
+package model.pieces;
 
 public enum Colors {
     WHITE(0),

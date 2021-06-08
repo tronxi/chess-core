@@ -8,7 +8,7 @@ public class Square {
     private final Row row;
     private final Column column;
 
-    public Square(Row row, Column column) {
+    public Square(Column column, Row row) {
         Validate.notNull(row);
         Validate.notNull(column);
 

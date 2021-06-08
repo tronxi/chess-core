@@ -1,7 +1,6 @@
 package model.pieces;
 
 import model.Movement;
-import model.colors.Colors;
 import org.apache.commons.lang3.Validate;
 
 public abstract class Piece {
