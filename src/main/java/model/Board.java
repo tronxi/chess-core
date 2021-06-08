@@ -1,10 +1,11 @@
 package model;
 
-import model.builders.BlackBuilder;
+import builders.BlackBuilder;
 import model.pieces.Colors;
-import model.builders.WhiteBuilder;
-import model.exceptions.InvalidMovementException;
+import builders.WhiteBuilder;
+import exceptions.InvalidMovementException;
 import model.pieces.Piece;
+import model.position.Movement;
 import model.position.Square;
 
 import java.util.*;

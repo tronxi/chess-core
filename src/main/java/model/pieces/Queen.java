@@ -1,6 +1,6 @@
 package model.pieces;
 
-import model.Movement;
+import model.position.Movement;
 
 public class Queen extends Piece {
     public Queen(Colors color) {

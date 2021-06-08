@@ -1,6 +1,6 @@
 package model.pieces;
 
-import model.Movement;
+import model.position.Movement;
 
 public class King extends Piece {
 

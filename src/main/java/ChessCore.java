@@ -1,6 +1,6 @@
 import model.Board;
-import model.Movement;
-import model.exceptions.InvalidMovementException;
+import model.position.Movement;
+import exceptions.InvalidMovementException;
 import model.pieces.Colors;
 import model.pieces.Piece;
 import model.position.Column;

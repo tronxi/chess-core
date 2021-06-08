@@ -1,4 +1,4 @@
-package model.builders;
+package builders;
 
 import model.pieces.*;
 import model.position.Column;

@@ -1,6 +1,6 @@
 package model.pieces;
 
-import model.Movement;
+import model.position.Movement;
 import org.apache.commons.lang3.Validate;
 
 public abstract class Piece {

@@ -1,6 +1,6 @@
 package model.pieces;
 
-import model.Movement;
+import model.position.Movement;
 import model.position.Column;
 import model.position.Row;
 import model.position.Square;
