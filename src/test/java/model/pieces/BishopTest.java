@@ -23,7 +23,7 @@ class BishopTest {
     @ParameterizedTest
     @MethodSource("provideMovement")
     public void testMovement(Movement movement, boolean expected) {
-        assertEquals(bishop.isLegal(movement), expected);
+        assertEquals(expected, bishop.isLegal(movement));
     }
 
     private static Stream<Arguments> provideMovement() {

@@ -23,7 +23,7 @@ class RookTest {
     @ParameterizedTest
     @MethodSource("provideMovement")
     public void testMovement(Movement movement, boolean expected) {
-        assertEquals(rook.isLegal(movement), expected);
+        assertEquals(expected, rook.isLegal(movement));
     }
 
     private static Stream<Arguments> provideMovement() {

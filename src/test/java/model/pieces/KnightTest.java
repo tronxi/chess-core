@@ -23,7 +23,7 @@ class KnightTest {
     @ParameterizedTest
     @MethodSource("provideMovement")
     public void testMovement(Movement movement, boolean expected) {
-        assertEquals(knight.isLegal(movement), expected);
+        assertEquals(expected, knight.isLegal(movement));
     }
 
     private static Stream<Arguments> provideMovement() {

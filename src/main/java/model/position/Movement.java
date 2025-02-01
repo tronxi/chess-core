@@ -1,6 +1,5 @@
 package model.position;
 
-import model.position.Square;
 import org.apache.commons.lang3.Validate;
 
 public class Movement {

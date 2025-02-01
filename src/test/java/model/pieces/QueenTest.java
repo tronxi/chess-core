@@ -23,7 +23,7 @@ class QueenTest {
     @ParameterizedTest
     @MethodSource("provideMovement")
     public void testMovement(Movement movement, boolean expected) {
-        assertEquals(queen.isLegal(movement), expected);
+        assertEquals(expected, queen.isLegal(movement));
     }
 
     private static Stream<Arguments> provideMovement() {
