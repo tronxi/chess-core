@@ -24,9 +24,10 @@ import java.util.function.Consumer;
 
 public class BoardComponent {
 
-    private final Color white = Color.WHITE;
-    private final Color black = Color.GREEN;
-    private final Color selected = Color.YELLOW;
+    private final Color white = new Color(0.933f, 0.933f, 0.835f, 1f);
+    private final Color black = new Color(0.486f, 0.584f, 0.365f, 1f);
+    private final Color whiteSelected = new Color(0.961f, 0.961f, 0.604f, 1f);
+    private final Color blackSelected = new Color(0.741f, 0.788f, 0.369f, 1f);
     private final int squareSize = 80;
     private final int labelFontSize = 20;
     private int totalPieces = 1;
@@ -43,6 +44,7 @@ public class BoardComponent {
     }
 
     public VBox reset(Board board) {
+        this.from = null;
         this.board = board;
         return drawBoard();
     }
@@ -144,11 +146,14 @@ public class BoardComponent {
     }
 
     private Color getColor(Square square, int piece) {
-        if (square.equals(from)) {
-            return selected;
-        }
         if (piece % 2 == 0) {
+            if(square.equals(from)) {
+                return blackSelected;
+            }
             return black;
+        }
+        if(square.equals(from)) {
+            return whiteSelected;
         }
         return white;
     }

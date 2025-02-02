@@ -1,5 +1,6 @@
 package dev.tronxi.ui;
 
+import atlantafx.base.theme.PrimerDark;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -7,8 +8,8 @@ import javafx.scene.Scene;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -22,8 +23,11 @@ public class UIInitializer extends Application {
     private Stage stage;
     private BoardComponent boardComponent;
 
+    private final Color backgroundColor = new Color(0.188f, 0.180f, 0.169f, 1f);
+
     @Override
     public void start(Stage stage) {
+        Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
         this.stage = stage;
         stage.setTitle("Chess");
         boardComponent = new BoardComponent();
@@ -46,6 +50,7 @@ public class UIInitializer extends Application {
         controls.setPadding(new Insets(0, 0, 0, 20));
 
         VBox hBox = new VBox(boardRepresentation, controls, wonPiecesRepresentation);
+        hBox.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
         stage.setScene(new Scene(hBox, 670, 850));
         stage.show();
     }
