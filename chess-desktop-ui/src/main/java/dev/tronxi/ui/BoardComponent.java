@@ -42,6 +42,15 @@ public class BoardComponent {
         return drawBoard();
     }
 
+    public VBox reset(Board board) {
+        this.board = board;
+        return drawBoard();
+    }
+
+    public Colors getTurn() {
+        return board.getTurn();
+    }
+
     private VBox drawBoard() {
         VBox root = new VBox();
 
