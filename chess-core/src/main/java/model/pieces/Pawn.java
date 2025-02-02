@@ -1,6 +1,9 @@
 package model.pieces;
 
 import model.position.Movement;
+import model.position.Square;
+
+import java.util.Map;
 
 public class Pawn extends Piece {
 
@@ -9,11 +12,11 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean isLegal(Movement movement) {
-        if(this.isColor(Colors.WHITE)) {
-            return movement.isWhitePawn();
+    public boolean isLegal(Movement movement, Map<Square, Piece> pieces) {
+        if (this.isColor(Colors.WHITE)) {
+            return movement.isWhitePawn(pieces);
         } else {
-            return movement.isBlackPawn();
+            return movement.isBlackPawn(pieces);
         }
     }
 }

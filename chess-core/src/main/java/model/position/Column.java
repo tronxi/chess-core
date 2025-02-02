@@ -11,8 +11,13 @@ public enum Column {
     H(8);
 
     private final int position;
+
     Column(int position) {
         this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     public int differenceBetween(Column column) {
@@ -28,5 +33,14 @@ public enum Column {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid column: " + value);
         }
+    }
+
+    public static Column fromInt(int value) {
+        for (Column column : Column.values()) {
+            if (column.position == value) {
+                return column;
+            }
+        }
+        throw new IllegalArgumentException("Invalid row number: " + value);
     }
 }

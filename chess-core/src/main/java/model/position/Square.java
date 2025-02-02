@@ -16,6 +16,14 @@ public class Square {
         this.column = column;
     }
 
+    public Row getRow() {
+        return row;
+    }
+
+    public Column getColumn() {
+        return column;
+    }
+
     public boolean isInHorse(Square square) {
         int columnDifference = Math.abs(this.column.differenceBetween(square.column));
         int rowDifference = Math.abs(this.row.differenceBetween(square.row));
@@ -49,6 +57,17 @@ public class Square {
         return this.isInDiagonal(square) && Math.abs(this.column.differenceBetween(square.column)) == 1
                 && Math.abs(this.row.differenceBetween(square.row)) == 1;
     }
+
+    public boolean isUpInDiagonalOneSquare(Square square) {
+        return this.isInDiagonal(square) && Math.abs(this.column.differenceBetween(square.column)) == 1
+                && this.row.differenceBetween(square.row) == -1;
+    }
+
+    public boolean isDownInDiagonalOneSquare(Square square) {
+        return this.isInDiagonal(square) && Math.abs(this.column.differenceBetween(square.column)) == 1
+                && this.row.differenceBetween(square.row) == 1;
+    }
+
 
     public boolean isUpOneSquare(Square square) {
         return this.isInColumn(square) && this.row.differenceBetween(square.row) == -1;
@@ -86,5 +105,13 @@ public class Square {
     @Override
     public int hashCode() {
         return Objects.hash(row, column);
+    }
+
+    @Override
+    public String toString() {
+        return "Square{" +
+                "column=" + column +
+                ", row=" + row +
+                '}';
     }
 }

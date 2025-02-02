@@ -1,7 +1,10 @@
 package model.pieces;
 
 import model.position.Movement;
+import model.position.Square;
 import org.apache.commons.lang3.Validate;
+
+import java.util.Map;
 
 public abstract class Piece {
 
@@ -23,7 +26,7 @@ public abstract class Piece {
         return this.color == color;
     }
 
-    public abstract boolean isLegal(Movement movement);
+    public abstract boolean isLegal(Movement movement, Map<Square, Piece> pieces);
 
     @Override
     public String toString() {

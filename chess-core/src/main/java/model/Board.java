@@ -34,7 +34,7 @@ public class Board {
     public void move(Movement movement) throws InvalidMovementException {
         Piece origin = retrieveFromSquareWithColor(movement.getFrom(), this.turn);
         Optional<Piece> target = retrieveFromSquare(movement.getTo());
-        if(!origin.isLegal(movement)) throw new InvalidMovementException();
+        if(!origin.isLegal(movement, pieces)) throw new InvalidMovementException();
         if(target.isPresent()) {
             if(target.get().isColor(this.turn.takeOther())) {
                 wonPieces.get(turn).add(pieces.get(movement.getTo()));

@@ -1,11 +1,14 @@
 package model.pieces;
 
 import model.position.Movement;
+import model.position.Square;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +26,8 @@ class RookTest {
     @ParameterizedTest
     @MethodSource("provideMovement")
     public void testMovement(Movement movement, boolean expected) {
-        assertEquals(expected, rook.isLegal(movement));
+        Map<Square, Piece> pieces = new HashMap<>();
+        assertEquals(expected, rook.isLegal(movement, pieces));
     }
 
     private static Stream<Arguments> provideMovement() {

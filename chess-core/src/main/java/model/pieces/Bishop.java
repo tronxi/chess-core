@@ -1,6 +1,9 @@
 package model.pieces;
 
 import model.position.Movement;
+import model.position.Square;
+
+import java.util.Map;
 
 public class Bishop extends Piece {
 
@@ -9,7 +12,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public boolean isLegal(Movement movement) {
-        return movement.isInDiagonal();
+    public boolean isLegal(Movement movement, Map<Square, Piece> pieces) {
+        return movement.isInDiagonal(pieces);
     }
 }
