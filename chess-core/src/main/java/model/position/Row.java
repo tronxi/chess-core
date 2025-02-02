@@ -16,7 +16,20 @@ public enum Row {
         this.position = position;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
     public int differenceBetween(Row row) {
         return this.position - row.position;
+    }
+
+    public static Row fromInt(int value) {
+        for (Row row : Row.values()) {
+            if (row.position == value) {
+                return row;
+            }
+        }
+        throw new IllegalArgumentException("Invalid row number: " + value);
     }
 }

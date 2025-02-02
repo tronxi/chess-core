@@ -66,4 +66,8 @@ public class Board {
         return wonPieces;
     }
 
+    public Colors getTurn() {
+        return turn;
+    }
+
 }

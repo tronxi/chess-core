@@ -15,6 +15,10 @@ public abstract class Piece {
         this.pieces = pieces;
     }
 
+    public Pieces getPieces() {
+        return pieces;
+    }
+
     public boolean isColor(Colors color) {
         return this.color == color;
     }
