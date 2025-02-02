@@ -107,46 +107,33 @@ public class Movement {
     }
 
     public boolean isInDiagonal(Map<Square, Piece> pieces) {
-        int tot = 1;
-        if (from.getRow().getPosition() < to.getRow().getPosition()) {
-            if (from.getColumn().getPosition() < to.getColumn().getPosition()) {
-                for (int i = getMinorColumn() + 1; i < getMaxColumn(); i++) {
-                    Square intermediate = new Square(Column.fromInt(i), Row.fromInt(getMinorRow() + tot));
-                    tot++;
-                    if (pieces.containsKey(intermediate)) {
-                        return false;
-                    }
-                }
-            } else {
-                for (int i = getMaxRow() - 1; i >= getMinorRow() + 1; i--) {
-                    Square intermediate = new Square(Column.fromInt(i), Row.fromInt(getMinorRow() + tot));
-                    tot++;
-                    if (pieces.containsKey(intermediate)) {
-                        return false;
-                    }
-                }
-            }
-        } else {
-            if (from.getColumn().getPosition() < to.getColumn().getPosition()) {
-                for (int i = getMaxRow() - 1; i >= getMinorRow() + 1; i--) {
-                    Square intermediate = new Square(Column.fromInt(i), Row.fromInt(getMinorRow() + tot));
-                    tot++;
-                    if (pieces.containsKey(intermediate)) {
-                        return false;
-                    }
-                }
-            } else {
-                for (int i = getMinorColumn() + 1; i < getMaxColumn(); i++) {
-                    Square intermediate = new Square(Column.fromInt(i), Row.fromInt(getMinorRow() + tot));
-                    tot++;
-                    if (pieces.containsKey(intermediate)) {
-                        return false;
-                    }
-                }
-            }
+        if (!isDifferent() || !this.from.isInDiagonal(this.to)) {
+            return false;
         }
 
-        return isDifferent() && this.from.isInDiagonal(this.to);
+        int fromCol = from.getColumn().getPosition();
+        int toCol = to.getColumn().getPosition();
+        int fromRow = from.getRow().getPosition();
+        int toRow = to.getRow().getPosition();
+
+        int colStep = (toCol > fromCol) ? 1 : -1;
+        int rowStep = (toRow > fromRow) ? 1 : -1;
+
+        int currentCol = fromCol + colStep;
+        int currentRow = fromRow + rowStep;
+
+        while (currentCol != toCol && currentRow != toRow) {
+            Square intermediate = new Square(Column.fromInt(currentCol), Row.fromInt(currentRow));
+
+            if (pieces.containsKey(intermediate)) {
+                return false;
+            }
+
+            currentCol += colStep;
+            currentRow += rowStep;
+        }
+
+        return true;
     }
 
     public boolean isInRowOneSquare() {

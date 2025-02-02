@@ -19,6 +19,7 @@ import model.position.Movement;
 import model.position.Row;
 import model.position.Square;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -33,6 +34,7 @@ public class BoardComponent {
     private int totalPieces = 1;
     private Board board;
     private Square from;
+    private List<Square> legalMoves = new ArrayList<>();
     private Consumer<VBox> onMovement;
     private Runnable onError;
 
@@ -46,6 +48,7 @@ public class BoardComponent {
     public VBox reset(Board board) {
         this.from = null;
         this.board = board;
+        this.legalMoves.clear();
         return drawBoard();
     }
 
@@ -63,11 +66,12 @@ public class BoardComponent {
                 Row row = Row.fromInt(i);
                 Column column = Column.fromString(String.valueOf(ch));
                 Square square = new Square(column, row);
+                boolean showAsLegal = legalMoves.contains(square);
                 if (board.getPieces().containsKey(square)) {
                     Piece piece = board.getPieces().get(square);
-                    hbox.getChildren().add(new SquareComponent(this::onClick, squareSize, getColor(square, totalPieces), column, row, piece));
+                    hbox.getChildren().add(new SquareComponent(this::onClick, squareSize, getColor(square, totalPieces), column, showAsLegal, row, piece));
                 } else {
-                    hbox.getChildren().add(new SquareComponent(this::onClick, squareSize, getColor(square, totalPieces), column, row));
+                    hbox.getChildren().add(new SquareComponent(this::onClick, squareSize, getColor(square, totalPieces), column, showAsLegal, row));
                 }
                 totalPieces++;
             }
@@ -115,19 +119,42 @@ public class BoardComponent {
 
     private void onClick(Square square) {
         if (from == null) {
-            this.from = square;
-            this.onMovement.accept(drawBoard());
-        } else {
-            try {
-                board.move(new Movement(from, square));
-                this.from = null;
-                board.changePlayer();
-                this.onMovement.accept(drawBoard());
-            } catch (InvalidMovementException e) {
-                this.from = null;
-                this.onMovement.accept(drawBoard());
-                onError.run();
+            if (board.getPieces().containsKey(square)) {
+                Piece piece = board.getPieces().get(square);
+                if (piece.isColor(board.getTurn())) {
+                    this.from = square;
+                    legalMoves = board.calculateLegalMoves(square);
+                    this.onMovement.accept(drawBoard());
+                }
             }
+        } else {
+            if (board.getPieces().containsKey(square)) {
+                Piece pieceFrom = board.getPieces().get(from);
+                Piece piece = board.getPieces().get(square);
+                if (pieceFrom.isColor(piece.getColor())) {
+                    this.from = square;
+                    legalMoves = board.calculateLegalMoves(square);
+                    this.onMovement.accept(drawBoard());
+                } else {
+                    finishMove(square);
+                }
+            } else {
+                finishMove(square);
+            }
+        }
+    }
+
+    private void finishMove(Square square) {
+        try {
+            legalMoves = new ArrayList<>();
+            board.move(new Movement(from, square));
+            this.from = null;
+            board.changePlayer();
+            this.onMovement.accept(drawBoard());
+        } catch (InvalidMovementException e) {
+            this.from = null;
+            this.onMovement.accept(drawBoard());
+            onError.run();
         }
     }
 
@@ -148,12 +175,12 @@ public class BoardComponent {
 
     private Color getColor(Square square, int piece) {
         if (piece % 2 == 0) {
-            if(square.equals(from)) {
+            if (square.equals(from)) {
                 return blackSelected;
             }
             return black;
         }
-        if(square.equals(from)) {
+        if (square.equals(from)) {
             return whiteSelected;
         }
         return white;

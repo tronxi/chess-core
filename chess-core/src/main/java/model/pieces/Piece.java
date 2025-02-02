@@ -18,6 +18,10 @@ public abstract class Piece {
         this.pieces = pieces;
     }
 
+    public Colors getColor() {
+        return color;
+    }
+
     public Pieces getPieces() {
         return pieces;
     }
