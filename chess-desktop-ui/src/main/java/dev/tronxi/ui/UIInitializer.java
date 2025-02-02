@@ -11,27 +11,30 @@ import model.Board;
 public class UIInitializer extends Application {
 
     private VBox boardRepresentation;
+    private VBox wonPiecesRepresentation;
     private Label turn;
     private Stage stage;
-
     private Board board;
+    private BoardComponent boardComponent;
 
     @Override
     public void start(Stage stage) {
         this.stage = stage;
         stage.setTitle("Chess");
         board = new Board();
-        BoardComponent boardComponent = new BoardComponent();
+        boardComponent = new BoardComponent();
         boardRepresentation = boardComponent.create(this::onError, this::onMove, board);
+        wonPiecesRepresentation = boardComponent.drawWonPieces();
         turn = new Label("Turn: " + board.getTurn());
 
-        VBox hBox = new VBox(boardRepresentation, turn);
+        VBox hBox = new VBox(boardRepresentation, turn, wonPiecesRepresentation);
         stage.setScene(new Scene(hBox, 670, 850));
         stage.show();
     }
 
     private void onMove(VBox updatedBoard) {
         boardRepresentation.getChildren().setAll(updatedBoard.getChildren());
+        wonPiecesRepresentation.getChildren().setAll(boardComponent.drawWonPieces().getChildren());
         turn.setText("Turn: " + board.getTurn());
     }
 

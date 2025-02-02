@@ -1,17 +1,14 @@
 package dev.tronxi.ui;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import model.pieces.Colors;
 import model.pieces.Piece;
 import model.position.Column;
 import model.position.Row;
 import model.position.Square;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class SquareComponent extends StackPane {
@@ -37,7 +34,7 @@ public class SquareComponent extends StackPane {
         });
 
         if (piece != null) {
-            ImageView pieceImage = loadPngFromResources(piece);
+            ImageView pieceImage = PieceRepresentation.loadPngFromResources(piece);
             getChildren().add(pieceImage);
         } else {
 //            Text text = new Text(representation());
@@ -49,32 +46,6 @@ public class SquareComponent extends StackPane {
 //            text.setFont(Font.font(20));
 //            getChildren().add(text);
         }
-    }
-
-    private ImageView loadPngFromResources(Piece piece) {
-        String imageName;
-
-        if (piece.isColor(Colors.BLACK)) {
-            imageName = switch (piece.getPieces()) {
-                case KING -> "kb";
-                case QUEEN -> "qb";
-                case BISHOP -> "bb";
-                case KNIGHT -> "nb";
-                case ROOK -> "rb";
-                case PAWN -> "pb";
-            };
-        } else {
-            imageName = switch (piece.getPieces()) {
-                case KING -> "kw";
-                case QUEEN -> "qw";
-                case BISHOP -> "bw";
-                case KNIGHT -> "nw";
-                case ROOK -> "rw";
-                case PAWN -> "pw";
-            };
-        }
-        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pieces/" + imageName + ".png")));
-        return new ImageView(image);
     }
 
     private String representation() {

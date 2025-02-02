@@ -4,6 +4,7 @@ import exceptions.InvalidMovementException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -11,12 +12,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import model.Board;
+import model.pieces.Colors;
 import model.pieces.Piece;
 import model.position.Column;
 import model.position.Movement;
 import model.position.Row;
 import model.position.Square;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class BoardComponent {
@@ -70,6 +73,28 @@ public class BoardComponent {
         return root;
     }
 
+    public VBox drawWonPieces() {
+        VBox root = new VBox();
+        HBox whitePieces = new HBox();
+        HBox blackPieces = new HBox();
+        List<Piece> whiteWonPieces = board.getWonPieces().get(Colors.WHITE);
+        for (Piece piece : whiteWonPieces) {
+            ImageView imageView = PieceRepresentation.loadPngFromResources(piece);
+            imageView.setFitWidth(30);
+            imageView.setFitHeight(30);
+            whitePieces.getChildren().add(imageView);
+        }
+        List<Piece> blackWonPieces = board.getWonPieces().get(Colors.BLACK);
+        for (Piece piece : blackWonPieces) {
+            ImageView imageView = PieceRepresentation.loadPngFromResources(piece);
+            imageView.setFitWidth(30);
+            imageView.setFitHeight(30);
+            blackPieces.getChildren().add(imageView);
+        }
+        root.getChildren().addAll(whitePieces, blackPieces);
+        return root;
+    }
+
     private void onClick(Square square) {
         if (from == null) {
             this.from = square;
@@ -90,7 +115,13 @@ public class BoardComponent {
 
     private HBox notation() {
         HBox hbox = new HBox();
-        hbox.getChildren().add(new Label(" "));
+        VBox labelContainer = new VBox();
+        labelContainer.setPadding(new Insets(10));
+        labelContainer.setAlignment(Pos.CENTER);
+        Label emptyLabel = new Label(" ");
+        emptyLabel.setFont(Font.font(labelFontSize));
+        labelContainer.getChildren().add(emptyLabel);
+        hbox.getChildren().add(labelContainer);
         for (char ch = 'A'; ch <= 'H'; ch++) {
             Label label = new Label(ch + "");
             label.setFont(Font.font(labelFontSize));
