@@ -22,6 +22,10 @@ public abstract class Piece {
         return color;
     }
 
+    public boolean isKing() {
+        return pieces.equals(Pieces.KING);
+    }
+
     public Pieces getPieces() {
         return pieces;
     }

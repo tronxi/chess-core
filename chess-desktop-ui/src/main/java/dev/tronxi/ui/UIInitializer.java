@@ -30,7 +30,7 @@ public class UIInitializer extends Application {
         this.stage = stage;
         stage.setTitle("Chess");
         boardComponent = new BoardComponent();
-        boardRepresentation = boardComponent.create(this::onError, this::onMove, new Board());
+        boardRepresentation = boardComponent.create(stage, this::onError, this::onMove, new Board());
         wonPiecesRepresentation = boardComponent.drawWonPieces();
 
         HBox controls = new HBox();

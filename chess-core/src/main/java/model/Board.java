@@ -15,10 +15,12 @@ import java.util.*;
 public class Board {
     private final Map<Square, Piece> pieces;
     private final Map<Colors, List<Piece>> wonPieces;
+    private final Map<Colors, Boolean> checks;
     private Colors turn;
-
     public Board() {
         turn = Colors.WHITE;
+
+        checks = new HashMap<>();
 
         pieces = new HashMap<>();
         pieces.putAll(new WhiteBuilder().initialPosition());
@@ -49,6 +51,8 @@ public class Board {
             pieces.remove(movement.getFrom());
             pieces.put(movement.getTo(), origin);
         }
+        Colors other = this.turn.takeOther();
+        checks.put(other, isInCheck(other));
     }
 
     public List<Square> calculateLegalMoves(Square origin) {
@@ -73,6 +77,24 @@ public class Board {
         return legalMoves;
     }
 
+    private boolean isInCheck(Colors color) {
+        for (Square square : pieces.keySet()) {
+            Piece piece = pieces.get(square);
+            if (!piece.isColor(color)) {
+                List<Square> legalMoves = calculateLegalMoves(square);
+                for (Square legalMove : legalMoves) {
+                    if (pieces.containsKey(legalMove)) {
+                        Piece pieceInLegalMove = pieces.get(legalMove);
+                        if (pieceInLegalMove.isColor(color) && pieceInLegalMove.isKing()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private Piece retrieveFromSquareWithColor(Square square, Colors color) throws InvalidMovementException {
         Piece piece = pieces.get(square);
         if (piece == null || !piece.isColor(color)) throw new InvalidMovementException();
@@ -93,6 +115,10 @@ public class Board {
 
     public Colors getTurn() {
         return turn;
+    }
+
+    public Boolean isCheck(Colors color) {
+        return checks.get(color);
     }
 
 }

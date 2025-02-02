@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import model.Board;
 import model.pieces.Colors;
 import model.pieces.Piece;
@@ -29,6 +30,7 @@ public class BoardComponent {
     private final Color black = new Color(0.486f, 0.584f, 0.365f, 1f);
     private final Color whiteSelected = new Color(0.961f, 0.961f, 0.604f, 1f);
     private final Color blackSelected = new Color(0.741f, 0.788f, 0.369f, 1f);
+    private Stage stage;
     private final int squareSize = 80;
     private final int labelFontSize = 20;
     private int totalPieces = 1;
@@ -38,7 +40,8 @@ public class BoardComponent {
     private Consumer<VBox> onMovement;
     private Runnable onError;
 
-    public VBox create(Runnable onError, Consumer<VBox> onMovement, Board board) {
+    public VBox create(Stage stage, Runnable onError, Consumer<VBox> onMovement, Board board) {
+        this.stage = stage;
         this.onMovement = onMovement;
         this.onError = onError;
         this.board = board;
@@ -150,6 +153,9 @@ public class BoardComponent {
             board.move(new Movement(from, square));
             this.from = null;
             board.changePlayer();
+            if (board.isCheck(board.getTurn())) {
+                Toast.show(stage, "Check!", 1000);
+            }
             this.onMovement.accept(drawBoard());
         } catch (InvalidMovementException e) {
             this.from = null;
