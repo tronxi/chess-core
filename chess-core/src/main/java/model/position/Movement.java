@@ -26,6 +26,20 @@ public class Movement {
         return isDifferent() && this.from.isInHorse(this.to);
     }
 
+    public boolean isWhitePawn() {
+        if (from.isInInitialWhitePawn()) {
+            return isDifferent() && (this.from.isUpOneSquare(this.to) || this.from.isUpTwoSquare(this.to));
+        }
+        return isDifferent() && this.from.isUpOneSquare(this.to);
+    }
+
+    public boolean isBlackPawn() {
+        if (from.isInInitialBlackPawn()) {
+            return isDifferent() && (this.from.isDownOneSquare(this.to) || this.from.isDownTwoSquare(this.to));
+        }
+        return isDifferent() && this.from.isDownOneSquare(this.to);
+    }
+
     public boolean isInRow() {
         return isDifferent() && this.from.isInRow(this.to);
     }

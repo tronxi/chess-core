@@ -11,9 +11,9 @@ public class Pawn extends Piece {
     @Override
     public boolean isLegal(Movement movement) {
         if(this.isColor(Colors.WHITE)) {
-            return true;
+            return movement.isWhitePawn();
         } else {
-            return true;
+            return movement.isBlackPawn();
         }
     }
 }

@@ -50,6 +50,31 @@ public class Square {
                 && Math.abs(this.row.differenceBetween(square.row)) == 1;
     }
 
+    public boolean isUpOneSquare(Square square) {
+        return this.isInColumn(square) && this.row.differenceBetween(square.row) == -1;
+    }
+
+    public boolean isUpTwoSquare(Square square) {
+        return this.isInColumn(square) && this.row.differenceBetween(square.row) == -2;
+    }
+
+    public boolean isDownOneSquare(Square square) {
+        return this.isInColumn(square) && this.row.differenceBetween(square.row) == 1;
+    }
+
+    public boolean isDownTwoSquare(Square square) {
+        return this.isInColumn(square) && this.row.differenceBetween(square.row) == 2;
+    }
+
+
+    public boolean isInInitialWhitePawn() {
+        return this.row == Row.TWO;
+    }
+
+    public boolean isInInitialBlackPawn() {
+        return this.row == Row.SEVEN;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
