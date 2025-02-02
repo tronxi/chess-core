@@ -39,19 +39,17 @@ public class Toast {
         FadeTransition fadeIn = new FadeTransition(Duration.millis(300), toastLabel);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
-        fadeIn.setOnFinished(event -> {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(durationInMillis);
-                } catch (InterruptedException ignored) {
-                }
-                FadeTransition fadeOut = new FadeTransition(Duration.millis(300), toastLabel);
-                fadeOut.setFromValue(1);
-                fadeOut.setToValue(0);
-                fadeOut.setOnFinished(e -> popup.hide());
-                fadeOut.play();
-            }).start();
-        });
+        fadeIn.setOnFinished(event -> new Thread(() -> {
+            try {
+                Thread.sleep(durationInMillis);
+            } catch (InterruptedException ignored) {
+            }
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(300), toastLabel);
+            fadeOut.setFromValue(1);
+            fadeOut.setToValue(0);
+            fadeOut.setOnFinished(e -> popup.hide());
+            fadeOut.play();
+        }).start());
         return fadeIn;
     }
 }
