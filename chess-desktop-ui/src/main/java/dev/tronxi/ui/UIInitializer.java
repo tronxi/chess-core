@@ -47,11 +47,11 @@ public class UIInitializer extends Application {
         controls.getChildren().addAll(resetButton, turn);
         controls.setAlignment(Pos.CENTER_LEFT);
         controls.setSpacing(15);
-        controls.setPadding(new Insets(0, 0, 0, 20));
+        controls.setPadding(new Insets(10, 0, 0, 40));
 
         VBox hBox = new VBox(boardRepresentation, controls, wonPiecesRepresentation);
         hBox.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
-        stage.setScene(new Scene(hBox, 670, 850));
+        stage.setScene(new Scene(hBox, 720, 800));
         stage.show();
     }
 

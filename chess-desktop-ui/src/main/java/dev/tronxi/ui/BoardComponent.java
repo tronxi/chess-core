@@ -58,13 +58,7 @@ public class BoardComponent {
 
         for (int i = 8; i >= 1; i--) {
             HBox hbox = new HBox();
-            VBox labelContainer = new VBox();
-            labelContainer.setPadding(new Insets(10));
-            labelContainer.setAlignment(Pos.CENTER);
-            Label numberLabel = new Label(i + "");
-            numberLabel.setFont(Font.font(labelFontSize));
-            labelContainer.getChildren().add(numberLabel);
-            hbox.getChildren().add(labelContainer);
+            hbox.getChildren().add(generateRectangleForLabel(String.valueOf(i)));
             for (char ch = 'a'; ch <= 'h'; ch++) {
                 Row row = Row.fromInt(i);
                 Column column = Column.fromString(String.valueOf(ch));
@@ -77,6 +71,7 @@ public class BoardComponent {
                 }
                 totalPieces++;
             }
+            hbox.getChildren().add(generateRectangleForLabel(String.valueOf(i)));
             totalPieces++;
             root.getChildren().add(hbox);
         }
@@ -84,8 +79,20 @@ public class BoardComponent {
         return root;
     }
 
+    private StackPane generateRectangleForLabel(String label) {
+        StackPane stackPane = new StackPane();
+        Rectangle rectangleLabel = new Rectangle();
+        rectangleLabel.setWidth(40);
+        stackPane.setAlignment(Pos.CENTER);
+        Label numberLabel = new Label(label);
+        numberLabel.setFont(Font.font(labelFontSize));
+        stackPane.getChildren().addAll(rectangleLabel, numberLabel);
+        return stackPane;
+    }
+
     public VBox drawWonPieces() {
         VBox root = new VBox();
+        root.setPadding(new Insets(10, 0, 0, 40));
         HBox whitePieces = new HBox();
         HBox blackPieces = new HBox();
         List<Piece> whiteWonPieces = board.getWonPieces().get(Colors.WHITE);
@@ -126,13 +133,7 @@ public class BoardComponent {
 
     private HBox notation() {
         HBox hbox = new HBox();
-        VBox labelContainer = new VBox();
-        labelContainer.setPadding(new Insets(10));
-        labelContainer.setAlignment(Pos.CENTER);
-        Label emptyLabel = new Label(" ");
-        emptyLabel.setFont(Font.font(labelFontSize));
-        labelContainer.getChildren().add(emptyLabel);
-        hbox.getChildren().add(labelContainer);
+        hbox.getChildren().add(generateRectangleForLabel(""));
         for (char ch = 'A'; ch <= 'H'; ch++) {
             Label label = new Label(ch + "");
             label.setFont(Font.font(labelFontSize));
