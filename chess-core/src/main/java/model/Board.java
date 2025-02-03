@@ -11,6 +11,7 @@ import model.position.Row;
 import model.position.Square;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Board {
     private final Map<Square, Piece> pieces;
@@ -41,7 +42,7 @@ public class Board {
     public void move(Movement movement) throws InvalidMovementException {
         Piece origin = retrieveFromSquareWithColor(movement.getFrom(), this.turn);
         Optional<Piece> target = retrieveFromSquare(movement.getTo());
-        if (!origin.isLegal(movement, pieces)) throw new InvalidMovementException();
+        if (!isLegalMovement(movement)) throw new InvalidMovementException();
         if (target.isPresent()) {
             if (target.get().isColor(this.turn.takeOther())) {
                 wonPieces.get(turn).add(pieces.get(movement.getTo()));
@@ -56,6 +57,11 @@ public class Board {
         }
         Colors other = this.turn.takeOther();
         checks.put(other, calculateIfIsInCheck(other));
+    }
+
+    private boolean isLegalMovement(Movement movement) {
+        List<Square> legal = calculateLegalMoves(movement.getFrom());
+        return legal.contains(movement.getTo());
     }
 
     public List<Square> calculateLegalMoves(Square origin) {
@@ -77,8 +83,69 @@ public class Board {
                 }
             }
         }
+        return legalMoves.stream().filter(square -> {
+            Movement temporalMove = new Movement(origin, square);
+            Map<Square, Piece> temporalPieces = calculateTemporalMove(temporalMove);
+            return !calculateIfItsInCheckForTemporalMove(temporalPieces, turn);
+        }).collect(Collectors.toList());
+    }
+
+    private Map<Square, Piece> calculateTemporalMove(Movement movement) {
+        Map<Square, Piece> temporalMoves = new HashMap<>(pieces);
+        Piece origin = temporalMoves.get(movement.getFrom());
+        Optional<Piece> target = Optional.ofNullable(temporalMoves.get(movement.getTo()));
+        if (target.isPresent()) {
+            if (target.get().isColor(this.turn.takeOther())) {
+                temporalMoves.remove(movement.getFrom());
+                temporalMoves.put(movement.getTo(), origin);
+            }
+        } else {
+            temporalMoves.remove(movement.getFrom());
+            temporalMoves.put(movement.getTo(), origin);
+        }
+        return temporalMoves;
+    }
+
+    private boolean calculateIfItsInCheckForTemporalMove(Map<Square, Piece> temporalPieces, Colors color) {
+        for (Square square : temporalPieces.keySet()) {
+            Piece piece = temporalPieces.get(square);
+            if (!piece.isColor(color)) {
+                List<Square> legalMoves = calculateLegalMovesForTemporalMove(temporalPieces, square);
+                for (Square legalMove : legalMoves) {
+                    if (temporalPieces.containsKey(legalMove)) {
+                        Piece pieceInLegalMove = temporalPieces.get(legalMove);
+                        if (pieceInLegalMove.isColor(color) && pieceInLegalMove.isKing()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private List<Square> calculateLegalMovesForTemporalMove(Map<Square, Piece> temporalPieces, Square origin) {
+        List<Square> legalMoves = new ArrayList<>();
+        if (!temporalPieces.containsKey(origin)) return legalMoves;
+        Piece piece = temporalPieces.get(origin);
+        for (Column column : Column.values()) {
+            for (Row row : Row.values()) {
+                Square target = new Square(column, row);
+                Movement movement = new Movement(origin, target);
+                if (piece.isLegal(movement, temporalPieces)) {
+                    if (temporalPieces.containsKey(target)) {
+                        if (!temporalPieces.get(target).isColor(piece.getColor())) {
+                            legalMoves.add(target);
+                        }
+                    } else {
+                        legalMoves.add(target);
+                    }
+                }
+            }
+        }
         return legalMoves;
     }
+
 
     private boolean calculateIfIsInCheck(Colors color) {
         for (Square square : pieces.keySet()) {

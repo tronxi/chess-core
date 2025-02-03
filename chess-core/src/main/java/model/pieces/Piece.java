@@ -38,6 +38,6 @@ public abstract class Piece {
 
     @Override
     public String toString() {
-        return pieces.getInitial();
+        return color + " " + pieces.getInitial();
     }
 }
