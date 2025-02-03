@@ -19,7 +19,6 @@ public class UIInitializer extends Application {
     private VBox boardRepresentation;
     private VBox wonPiecesRepresentation;
     private Label turn;
-    private Stage stage;
     private BoardComponent boardComponent;
 
     private final Color backgroundColor = new Color(0.188f, 0.180f, 0.169f, 1f);
@@ -27,10 +26,9 @@ public class UIInitializer extends Application {
     @Override
     public void start(Stage stage) {
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-        this.stage = stage;
         stage.setTitle("Chess");
         boardComponent = new BoardComponent();
-        boardRepresentation = boardComponent.create(stage, this::onError, this::onMove, new Board());
+        boardRepresentation = boardComponent.create(stage, this::onMove, new Board());
         wonPiecesRepresentation = boardComponent.drawWonPieces();
 
         HBox controls = new HBox();
@@ -58,9 +56,5 @@ public class UIInitializer extends Application {
         boardRepresentation.getChildren().setAll(updatedBoard.getChildren());
         wonPiecesRepresentation.getChildren().setAll(boardComponent.drawWonPieces().getChildren());
         turn.setText("Turn: " + boardComponent.getTurn());
-    }
-
-    private void onError() {
-        Toast.show(stage, "Invalid movement", 1000);
     }
 }

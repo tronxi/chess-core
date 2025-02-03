@@ -55,7 +55,7 @@ public class Board {
             pieces.put(movement.getTo(), origin);
         }
         Colors other = this.turn.takeOther();
-        checks.put(other, calculateIfIsInCheck(pieces, other));
+        checks.put(other, calculateIfIsInCheck(other));
     }
 
     public List<Square> calculateLegalMoves(Square origin) {
@@ -80,7 +80,7 @@ public class Board {
         return legalMoves;
     }
 
-    private boolean calculateIfIsInCheck(Map<Square, Piece> pieces, Colors color) {
+    private boolean calculateIfIsInCheck(Colors color) {
         for (Square square : pieces.keySet()) {
             Piece piece = pieces.get(square);
             if (!piece.isColor(color)) {

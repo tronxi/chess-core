@@ -38,12 +38,10 @@ public class BoardComponent {
     private Square from;
     private List<Square> legalMoves = new ArrayList<>();
     private Consumer<VBox> onMovement;
-    private Runnable onError;
 
-    public VBox create(Stage stage, Runnable onError, Consumer<VBox> onMovement, Board board) {
+    public VBox create(Stage stage, Consumer<VBox> onMovement, Board board) {
         this.stage = stage;
         this.onMovement = onMovement;
-        this.onError = onError;
         this.board = board;
         return drawBoard();
     }
@@ -160,7 +158,6 @@ public class BoardComponent {
         } catch (InvalidMovementException e) {
             this.from = null;
             this.onMovement.accept(drawBoard());
-            onError.run();
         }
     }
 
