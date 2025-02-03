@@ -153,7 +153,7 @@ public class BoardComponent {
             board.move(new Movement(from, square));
             this.from = null;
             board.changePlayer();
-            if (board.isCheck(board.getTurn())) {
+            if (board.isInCheck(board.getTurn())) {
                 Toast.show(stage, "Check!", 1000);
             }
             this.onMovement.accept(drawBoard());
