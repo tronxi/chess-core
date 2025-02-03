@@ -32,7 +32,6 @@ public class ChessCore {
             print(board);
             for(Movement movement: movementList) {
                 board.move(movement);
-                board.changePlayer();
                 print(board);
             }
         } catch (InvalidMovementException e) {

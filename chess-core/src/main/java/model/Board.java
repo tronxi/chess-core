@@ -17,6 +17,8 @@ public class Board {
     private final Map<Square, Piece> pieces;
     private final Map<Colors, List<Piece>> wonPieces;
     private final Map<Colors, Boolean> checks;
+    private final Map<Colors, Boolean> legalMoves;
+
     private Colors turn;
 
     public Board() {
@@ -25,6 +27,10 @@ public class Board {
         checks = new HashMap<>();
         checks.put(Colors.WHITE, false);
         checks.put(Colors.BLACK, false);
+
+        legalMoves = new HashMap<>();
+        legalMoves.put(Colors.WHITE, false);
+        legalMoves.put(Colors.BLACK, false);
 
         pieces = new HashMap<>();
         pieces.putAll(new WhiteBuilder().initialPosition());
@@ -35,7 +41,7 @@ public class Board {
         wonPieces.put(Colors.BLACK, new ArrayList<>());
     }
 
-    public void changePlayer() {
+    private void changePlayer() {
         this.turn = this.turn.takeOther();
     }
 
@@ -57,11 +63,25 @@ public class Board {
         }
         Colors other = this.turn.takeOther();
         checks.put(other, calculateIfIsInCheck(other));
+        changePlayer();
+        legalMoves.put(turn, calculateIfHasLegalMoves(turn));
     }
 
     private boolean isLegalMovement(Movement movement) {
         List<Square> legal = calculateLegalMoves(movement.getFrom());
         return legal.contains(movement.getTo());
+    }
+
+    private boolean calculateIfHasLegalMoves(Colors color) {
+        for (Square square : pieces.keySet()) {
+            if (pieces.get(square).isColor(color)) {
+                List<Square> legalMoves = calculateLegalMoves(square);
+                if (!legalMoves.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public List<Square> calculateLegalMoves(Square origin) {
@@ -189,6 +209,10 @@ public class Board {
 
     public Boolean isInCheck(Colors color) {
         return checks.get(color);
+    }
+
+    public Boolean hasLegalMoves(Colors color) {
+        return legalMoves.get(color);
     }
 
 }

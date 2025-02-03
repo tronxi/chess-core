@@ -150,9 +150,15 @@ public class BoardComponent {
             legalMoves = new ArrayList<>();
             board.move(new Movement(from, square));
             this.from = null;
-            board.changePlayer();
-            if (board.isInCheck(board.getTurn())) {
+            boolean isInCheck = board.isInCheck(board.getTurn());
+            boolean hasLegalMoves = board.hasLegalMoves(board.getTurn());
+
+            if (isInCheck && hasLegalMoves) {
                 Toast.show(stage, "Check!", 1000);
+            } else if(isInCheck && !hasLegalMoves) {
+                Toast.show(stage, "CheckMate!", 1000);
+            } else if(!isInCheck && !hasLegalMoves) {
+                Toast.show(stage, "Draw!", 1000);
             }
             this.onMovement.accept(drawBoard());
         } catch (InvalidMovementException e) {
