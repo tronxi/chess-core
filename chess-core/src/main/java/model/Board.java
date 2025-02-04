@@ -5,7 +5,6 @@ import model.pieces.Colors;
 import builders.WhiteBuilder;
 import exceptions.InvalidMovementException;
 import model.pieces.Piece;
-import model.pieces.Pieces;
 import model.position.Column;
 import model.position.Movement;
 import model.position.Row;
