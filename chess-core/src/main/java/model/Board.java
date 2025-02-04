@@ -5,6 +5,7 @@ import model.pieces.Colors;
 import builders.WhiteBuilder;
 import exceptions.InvalidMovementException;
 import model.pieces.Piece;
+import model.pieces.Pieces;
 import model.position.Column;
 import model.position.Movement;
 import model.position.Row;
@@ -86,6 +87,16 @@ public class Board {
             }
         }
         return false;
+    }
+
+    public void promote(Square square, Piece promotedPiece) {
+        pieces.remove(square);
+        pieces.put(square, promotedPiece);
+        changePlayer();
+        Colors other = this.turn.takeOther();
+        checks.put(other, calculateIfIsInCheck(other));
+        changePlayer();
+        legalMoves.put(turn, calculateIfHasLegalMoves(turn));
     }
 
     private boolean isLegalMovement(Movement movement) {

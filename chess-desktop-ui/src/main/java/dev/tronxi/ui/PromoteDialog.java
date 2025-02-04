@@ -32,7 +32,7 @@ public class PromoteDialog {
         for (Piece representation : PieceRepresentation.getPromotePieces(piece.getColor())) {
             ImageView imageView = PieceRepresentation.loadPngFromResources(representation);
             imageView.setOnMouseClicked(event -> {
-                board.getPieces().put(square, representation);
+                board.promote(square, representation);
                 alert.close();
             });
             pieceContainer.getChildren().add(imageView);
