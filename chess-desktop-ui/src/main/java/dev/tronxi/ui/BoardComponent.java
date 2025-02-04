@@ -22,6 +22,7 @@ import model.position.Square;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class BoardComponent {
@@ -149,15 +150,20 @@ public class BoardComponent {
         try {
             legalMoves = new ArrayList<>();
             board.move(new Movement(from, square));
+            Optional<Square> maybePromote = board.canPromote(board.getTurn().takeOther());
+            if (maybePromote.isPresent()) {
+                PromoteDialog promoteDialog = new PromoteDialog();
+                promoteDialog.createWorkspaceDialog(maybePromote.get(), board);
+            }
             this.from = null;
             boolean isInCheck = board.isInCheck(board.getTurn());
             boolean hasLegalMoves = board.hasLegalMoves(board.getTurn());
 
             if (isInCheck && hasLegalMoves) {
                 Toast.show(stage, "Check!", 1000);
-            } else if(isInCheck && !hasLegalMoves) {
+            } else if (isInCheck && !hasLegalMoves) {
                 Toast.show(stage, "CheckMate!", 1000);
-            } else if(!isInCheck && !hasLegalMoves) {
+            } else if (!isInCheck && !hasLegalMoves) {
                 Toast.show(stage, "Draw!", 1000);
             }
             this.onMovement.accept(drawBoard());

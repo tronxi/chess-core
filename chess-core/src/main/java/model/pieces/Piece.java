@@ -26,6 +26,10 @@ public abstract class Piece {
         return pieces.equals(Pieces.KING);
     }
 
+    public boolean isPawn() {
+        return pieces.equals(Pieces.PAWN);
+    }
+
     public Pieces getPieces() {
         return pieces;
     }

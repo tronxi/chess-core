@@ -21,7 +21,7 @@ public class UIInitializer extends Application {
     private Label turn;
     private BoardComponent boardComponent;
 
-    private final Color backgroundColor = new Color(0.188f, 0.180f, 0.169f, 1f);
+    public static final Color backgroundColor = new Color(0.188f, 0.180f, 0.169f, 1f);
 
     @Override
     public void start(Stage stage) {

@@ -18,6 +18,7 @@ public class Board {
     private final Map<Colors, List<Piece>> wonPieces;
     private final Map<Colors, Boolean> checks;
     private final Map<Colors, Boolean> legalMoves;
+    private final Map<Colors, Square> promotes;
 
     private Colors turn;
 
@@ -31,6 +32,8 @@ public class Board {
         legalMoves = new HashMap<>();
         legalMoves.put(Colors.WHITE, false);
         legalMoves.put(Colors.BLACK, false);
+
+        promotes = new HashMap<>();
 
         pieces = new HashMap<>();
         pieces.putAll(new WhiteBuilder().initialPosition());
@@ -46,6 +49,7 @@ public class Board {
     }
 
     public void move(Movement movement) throws InvalidMovementException {
+        promotes.clear();
         Piece origin = retrieveFromSquareWithColor(movement.getFrom(), this.turn);
         Optional<Piece> target = retrieveFromSquare(movement.getTo());
         if (!isLegalMovement(movement)) throw new InvalidMovementException();
@@ -54,17 +58,34 @@ public class Board {
                 wonPieces.get(turn).add(pieces.get(movement.getTo()));
                 pieces.remove(movement.getFrom());
                 pieces.put(movement.getTo(), origin);
+                if (canPromote(origin, movement)) {
+                    promotes.put(turn, movement.getTo());
+                }
             } else {
                 throw new InvalidMovementException();
             }
         } else {
             pieces.remove(movement.getFrom());
             pieces.put(movement.getTo(), origin);
+            if (canPromote(origin, movement)) {
+                promotes.put(turn, movement.getTo());
+            }
         }
         Colors other = this.turn.takeOther();
         checks.put(other, calculateIfIsInCheck(other));
         changePlayer();
         legalMoves.put(turn, calculateIfHasLegalMoves(turn));
+    }
+
+    private boolean canPromote(Piece origin, Movement movement) {
+        if (origin.isPawn()) {
+            if (origin.isColor(Colors.BLACK)) {
+                return movement.getTo().getRow().equals(Row.ONE);
+            } else {
+                return movement.getTo().getRow().equals(Row.EIGHT);
+            }
+        }
+        return false;
     }
 
     private boolean isLegalMovement(Movement movement) {
@@ -213,6 +234,13 @@ public class Board {
 
     public Boolean hasLegalMoves(Colors color) {
         return legalMoves.get(color);
+    }
+
+    public Optional<Square> canPromote(Colors color) {
+        if (promotes.containsKey(color)) {
+            return Optional.of(promotes.get(color));
+        }
+        return Optional.empty();
     }
 
 }
