@@ -1,6 +1,7 @@
 package dev.tronxi.ui;
 
 import exceptions.InvalidMovementException;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -20,9 +21,7 @@ import model.position.Movement;
 import model.position.Row;
 import model.position.Square;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class BoardComponent {
@@ -39,8 +38,10 @@ public class BoardComponent {
     private Square from;
     private List<Square> legalMoves = new ArrayList<>();
     private Consumer<VBox> onMovement;
+    private boolean playVsIA;
 
     public VBox create(Stage stage, Consumer<VBox> onMovement, Board board) {
+        this.playVsIA = false;
         this.stage = stage;
         this.onMovement = onMovement;
         this.board = board;
@@ -48,6 +49,15 @@ public class BoardComponent {
     }
 
     public VBox reset(Board board) {
+        this.playVsIA = false;
+        this.from = null;
+        this.board = board;
+        this.legalMoves.clear();
+        return drawBoard();
+    }
+
+    public VBox playVsIA(Board board) {
+        this.playVsIA = true;
         this.from = null;
         this.board = board;
         this.legalMoves.clear();
@@ -159,18 +169,48 @@ public class BoardComponent {
             boolean isInCheck = board.isInCheck(board.getTurn());
             boolean hasLegalMoves = board.hasLegalMoves(board.getTurn());
 
-            if (isInCheck && hasLegalMoves) {
-                Toast.show(stage, "Check!", 1000);
-            } else if (isInCheck && !hasLegalMoves) {
-                Toast.show(stage, "CheckMate!", 1000);
-            } else if (!isInCheck && !hasLegalMoves) {
-                Toast.show(stage, "Draw!", 1000);
+            showGameStatus(isInCheck, hasLegalMoves);
+
+            if (playVsIA) {
+                performRandomMove();
             }
-            this.onMovement.accept(drawBoard());
+
         } catch (InvalidMovementException e) {
             this.from = null;
             this.onMovement.accept(drawBoard());
         }
+    }
+
+    private void performRandomMove() throws InvalidMovementException {
+        boolean isInCheck;
+        boolean hasLegalMoves;
+        Optional<Movement> maybeMovement = board.getRandomMove(board.getTurn());
+        if (maybeMovement.isPresent()) {
+            this.board.move(maybeMovement.get());
+            isInCheck = board.isInCheck(board.getTurn());
+            hasLegalMoves = board.hasLegalMoves(board.getTurn());
+            showWithDelay(isInCheck, hasLegalMoves);
+        }
+    }
+
+    private void showWithDelay(boolean isInCheck, boolean hasLegalMoves) {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> showGameStatus(isInCheck, hasLegalMoves));
+            }
+        }, 500);
+    }
+
+    private void showGameStatus(boolean isInCheck, boolean hasLegalMoves) {
+        if (isInCheck && hasLegalMoves) {
+            Toast.show(stage, "Check!", 1000);
+        } else if (isInCheck && !hasLegalMoves) {
+            Toast.show(stage, "CheckMate!", 1000);
+        } else if (!isInCheck && !hasLegalMoves) {
+            Toast.show(stage, "Draw!", 1000);
+        }
+        this.onMovement.accept(drawBoard());
     }
 
     private HBox notation() {

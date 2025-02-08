@@ -48,8 +48,4 @@ public class PieceRepresentation {
         };
     }
 
-    private static ImageView getImage(String representation) {
-        Image image = new Image(Objects.requireNonNull(PieceRepresentation.class.getResourceAsStream("/pieces/" + representation + ".png")));
-        return new ImageView(image);
-    }
 }

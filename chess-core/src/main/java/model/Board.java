@@ -417,4 +417,28 @@ public class Board {
         return Optional.empty();
     }
 
+    public Optional<Movement> getRandomMove(Colors color) {
+        List<Square> colorSquares = pieces.keySet().stream()
+                .filter(square -> {
+                    Piece piece = pieces.get(square);
+                    return piece.isColor(color);
+                }).collect(Collectors.toList());
+        Set<Square> picketsSquares = new HashSet<>();
+
+        do {
+            Random random = new Random();
+            int randomSquareIndex = random.nextInt(colorSquares.size());
+            Square randomSquare = colorSquares.get(randomSquareIndex);
+            picketsSquares.add(randomSquare);
+
+            List<Square> legalMoves = calculateLegalMoves(randomSquare);
+            if (!legalMoves.isEmpty()) {
+                int randomMoveIndex = random.nextInt(legalMoves.size());
+                return Optional.of(new Movement(randomSquare, legalMoves.get(randomMoveIndex)));
+            }
+        } while (colorSquares.size() != picketsSquares.size());
+        return Optional.empty();
+
+    }
+
 }

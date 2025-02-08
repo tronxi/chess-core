@@ -40,8 +40,16 @@ public class UIInitializer extends Application {
             wonPiecesRepresentation.getChildren().setAll(boardComponent.drawWonPieces().getChildren());
             turn.setText("Turn: " + boardComponent.getTurn());
         });
+        Button playWithIA = new Button("Play VS IA");
+        playWithIA.setOnMouseClicked(mouseEvent -> {
+            boardRepresentation.getChildren().setAll(boardComponent.playVsIA(new Board()));
+            wonPiecesRepresentation.getChildren().setAll(boardComponent.drawWonPieces().getChildren());
+            turn.setText("Turn: " + boardComponent.getTurn());
+        });
+        resetButton.setFocusTraversable(false);
+        playWithIA.setFocusTraversable(false);
 
-        controls.getChildren().addAll(resetButton, turn);
+        controls.getChildren().addAll(resetButton, playWithIA, turn);
         controls.setAlignment(Pos.CENTER_LEFT);
         controls.setSpacing(15);
         controls.setPadding(new Insets(10, 0, 0, 40));
