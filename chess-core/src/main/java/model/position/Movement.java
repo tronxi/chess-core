@@ -36,8 +36,10 @@ public class Movement {
             return false;
         }
         if (from.isInInitialWhitePawn()) {
-            if (this.from.isUpOneSquare(this.to) || this.from.isUpTwoSquare(this.to)) {
+            if (this.from.isUpOneSquare(this.to)) {
                 return !pieces.containsKey(this.to);
+            } else if (this.from.isUpTwoSquare(this.to)) {
+                return !pieces.containsKey(this.to) && !pieces.containsKey(new Square(this.to.getColumn(), Row.THREE));
             }
             if (this.from.isUpInDiagonalOneSquare(this.to)) {
                 if (pieces.containsKey(this.to)) {
@@ -64,8 +66,10 @@ public class Movement {
             return false;
         }
         if (from.isInInitialBlackPawn()) {
-            if (this.from.isDownOneSquare(this.to) || this.from.isDownTwoSquare(this.to)) {
+            if (this.from.isDownOneSquare(this.to)) {
                 return !pieces.containsKey(this.to);
+            } else if (this.from.isDownTwoSquare(this.to)) {
+                return !pieces.containsKey(this.to) && !pieces.containsKey(new Square(this.to.getColumn(), Row.SIX));
             }
             if (this.from.isDownInDiagonalOneSquare(this.to)) {
                 if (pieces.containsKey(this.to)) {
