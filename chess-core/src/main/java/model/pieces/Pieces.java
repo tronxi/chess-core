@@ -6,6 +6,7 @@ public enum Pieces {
     QUEEN("Q"),
     KNIGHT("N"),
     PAWN("P"),
+    EN_PASSANT_PAWN("EPP"),
     BISHOP("B"),
     ROOK("R");
 

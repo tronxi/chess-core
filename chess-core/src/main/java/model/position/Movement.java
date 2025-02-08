@@ -4,6 +4,7 @@ import model.pieces.Colors;
 import model.pieces.Piece;
 import org.apache.commons.lang3.Validate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Movement {
@@ -87,9 +88,10 @@ public class Movement {
     }
 
     public boolean isInRow(Map<Square, Piece> pieces) {
+        Map<Square, Piece> piecesWithoutEnPassant = piecesWithoutEnPassant(pieces);
         for (int i = getMinorColumn() + 1; i < getMaxColumn(); i++) {
             Square intermediate = new Square(Column.fromInt(i), from.getRow());
-            if (pieces.containsKey(intermediate)) {
+            if (piecesWithoutEnPassant.containsKey(intermediate)) {
                 return false;
             }
         }
@@ -97,9 +99,10 @@ public class Movement {
     }
 
     public boolean isInColumn(Map<Square, Piece> pieces) {
+        Map<Square, Piece> piecesWithoutEnPassant = piecesWithoutEnPassant(pieces);
         for (int i = getMinorRow() + 1; i < getMaxRow(); i++) {
             Square intermediate = new Square(from.getColumn(), Row.fromInt(i));
-            if (pieces.containsKey(intermediate)) {
+            if (piecesWithoutEnPassant.containsKey(intermediate)) {
                 return false;
             }
         }
@@ -110,6 +113,7 @@ public class Movement {
         if (!isDifferent() || !this.from.isInDiagonal(this.to)) {
             return false;
         }
+        Map<Square, Piece> piecesWithoutEnPassant = piecesWithoutEnPassant(pieces);
 
         int fromCol = from.getColumn().getPosition();
         int toCol = to.getColumn().getPosition();
@@ -125,7 +129,7 @@ public class Movement {
         while (currentCol != toCol && currentRow != toRow) {
             Square intermediate = new Square(Column.fromInt(currentCol), Row.fromInt(currentRow));
 
-            if (pieces.containsKey(intermediate)) {
+            if (piecesWithoutEnPassant.containsKey(intermediate)) {
                 return false;
             }
 
@@ -134,6 +138,17 @@ public class Movement {
         }
 
         return true;
+    }
+
+    private Map<Square, Piece> piecesWithoutEnPassant(Map<Square, Piece> pieces) {
+        Map<Square, Piece> piecesWithoutEnPassant = new HashMap<>();
+        for (Square square : pieces.keySet()) {
+            Piece piece = pieces.get(square);
+            if (!piece.isEnPassantPawn()) {
+                piecesWithoutEnPassant.put(square, piece);
+            }
+        }
+        return piecesWithoutEnPassant;
     }
 
     public boolean isInRowOneSquare() {
@@ -186,6 +201,16 @@ public class Movement {
     public boolean isBlackQueenSideCastle() {
         return from.equals(new Square(Column.E, Row.EIGHT)) &&
                 to.equals(new Square(Column.C, Row.EIGHT));
+    }
+
+    public boolean isWhiteDoublePawn() {
+        return from.getRow().equals(Row.TWO) &&
+                to.getRow().equals(Row.FOUR);
+    }
+
+    public boolean isBlackDoublePawn() {
+        return from.getRow().equals(Row.SEVEN) &&
+                to.getRow().equals(Row.FIVE);
     }
 
 }

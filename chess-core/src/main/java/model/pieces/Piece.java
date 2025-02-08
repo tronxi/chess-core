@@ -30,6 +30,10 @@ public abstract class Piece {
         return pieces.equals(Pieces.PAWN);
     }
 
+    public boolean isEnPassantPawn() {
+        return pieces.equals(Pieces.EN_PASSANT_PAWN);
+    }
+
     public boolean isRook() {
         return pieces.equals(Pieces.ROOK);
     }

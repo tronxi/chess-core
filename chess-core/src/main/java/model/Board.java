@@ -4,6 +4,7 @@ import builders.BlackBuilder;
 import model.pieces.Colors;
 import builders.WhiteBuilder;
 import exceptions.InvalidMovementException;
+import model.pieces.EnPassantPawn;
 import model.pieces.Piece;
 import model.position.Column;
 import model.position.Movement;
@@ -70,7 +71,22 @@ public class Board {
         if (!isLegalMovement(movement)) throw new InvalidMovementException();
         if (target.isPresent()) {
             if (target.get().isColor(this.turn.takeOther())) {
-                wonPieces.get(turn).add(pieces.get(movement.getTo()));
+                Piece targetPiece = target.get();
+                if (targetPiece.isEnPassantPawn()) {
+                    if (origin.isPawn()) {
+                        if (targetPiece.isColor(Colors.WHITE)) {
+                            Square originPawnSquare = new Square(movement.getTo().getColumn(), Row.FOUR);
+                            wonPieces.get(turn).add(pieces.get(originPawnSquare));
+                            pieces.remove(originPawnSquare);
+                        } else if (targetPiece.isColor(Colors.BLACK)) {
+                            Square originPawnSquare = new Square(movement.getTo().getColumn(), Row.FIVE);
+                            wonPieces.get(turn).add(pieces.get(originPawnSquare));
+                            pieces.remove(originPawnSquare);
+                        }
+                    }
+                } else {
+                    wonPieces.get(turn).add(pieces.get(movement.getTo()));
+                }
                 performMove(movement, origin);
             } else {
                 throw new InvalidMovementException();
@@ -102,6 +118,29 @@ public class Board {
             }
         }
         performCastleMoves(movement);
+        allowEnPassant(movement);
+        removeEnPassant(turn.takeOther());
+    }
+
+    private void allowEnPassant(Movement movement) {
+        if (movement.isWhiteDoublePawn()) {
+            Piece pawn = pieces.get(movement.getTo());
+            pieces.put(new Square(movement.getFrom().getColumn(), Row.THREE), new EnPassantPawn(pawn.getColor()));
+        } else if (movement.isBlackDoublePawn()) {
+            Piece pawn = pieces.get(movement.getTo());
+            pieces.put(new Square(movement.getFrom().getColumn(), Row.SIX), new EnPassantPawn(pawn.getColor()));
+        }
+    }
+
+    private void removeEnPassant(Colors color) {
+        List<Square> toRemove = new ArrayList<>();
+        for (Square square : pieces.keySet()) {
+            Piece piece = pieces.get(square);
+            if (piece.isEnPassantPawn() && piece.getColor().equals(color)) {
+                toRemove.add(square);
+            }
+        }
+        toRemove.forEach(pieces::remove);
     }
 
     private void performCastleMoves(Movement movement) {

@@ -15,6 +15,7 @@ public class PieceRepresentation {
             imageName = switch (piece.getPieces()) {
                 case KING -> "kb";
                 case QUEEN -> "qb";
+                case EN_PASSANT_PAWN -> "";
                 case BISHOP -> "bb";
                 case KNIGHT -> "nb";
                 case ROOK -> "rb";
@@ -24,11 +25,15 @@ public class PieceRepresentation {
             imageName = switch (piece.getPieces()) {
                 case KING -> "kw";
                 case QUEEN -> "qw";
+                case EN_PASSANT_PAWN -> "";
                 case BISHOP -> "bw";
                 case KNIGHT -> "nw";
                 case ROOK -> "rw";
                 case PAWN -> "pw";
             };
+        }
+        if (imageName.isEmpty()) {
+            return new ImageView();
         }
         Image image = new Image(Objects.requireNonNull(PieceRepresentation.class.getResourceAsStream("/pieces/" + imageName + ".png")));
         return new ImageView(image);
