@@ -19,6 +19,9 @@ public class Board {
     private final Map<Colors, Boolean> checks;
     private final Map<Colors, Boolean> legalMoves;
     private final Map<Colors, Square> promotes;
+    private final Map<Colors, Boolean> hasKingMoved;
+    private final Map<Colors, Boolean> hasARookMoved;
+    private final Map<Colors, Boolean> hasHRookMoved;
 
     private Colors turn;
 
@@ -32,6 +35,18 @@ public class Board {
         legalMoves = new HashMap<>();
         legalMoves.put(Colors.WHITE, false);
         legalMoves.put(Colors.BLACK, false);
+
+        hasKingMoved = new HashMap<>();
+        hasKingMoved.put(Colors.WHITE, false);
+        hasKingMoved.put(Colors.BLACK, false);
+
+        hasARookMoved = new HashMap<>();
+        hasARookMoved.put(Colors.WHITE, false);
+        hasARookMoved.put(Colors.BLACK, false);
+
+        hasHRookMoved = new HashMap<>();
+        hasHRookMoved.put(Colors.WHITE, false);
+        hasHRookMoved.put(Colors.BLACK, false);
 
         promotes = new HashMap<>();
 
@@ -56,25 +71,57 @@ public class Board {
         if (target.isPresent()) {
             if (target.get().isColor(this.turn.takeOther())) {
                 wonPieces.get(turn).add(pieces.get(movement.getTo()));
-                pieces.remove(movement.getFrom());
-                pieces.put(movement.getTo(), origin);
-                if (canPromote(origin, movement)) {
-                    promotes.put(turn, movement.getTo());
-                }
+                performMove(movement, origin);
             } else {
                 throw new InvalidMovementException();
             }
         } else {
-            pieces.remove(movement.getFrom());
-            pieces.put(movement.getTo(), origin);
-            if (canPromote(origin, movement)) {
-                promotes.put(turn, movement.getTo());
-            }
+            performMove(movement, origin);
         }
         Colors other = this.turn.takeOther();
         checks.put(other, calculateIfIsInCheck(other));
         changePlayer();
         legalMoves.put(turn, calculateIfHasLegalMoves(turn));
+    }
+
+    private void performMove(Movement movement, Piece origin) {
+        Piece fromPiece = pieces.get(movement.getFrom());
+        pieces.remove(movement.getFrom());
+        pieces.put(movement.getTo(), origin);
+        if (canPromote(origin, movement)) {
+            promotes.put(turn, movement.getTo());
+        }
+        if (pieces.get(movement.getTo()).isKing()) {
+            hasKingMoved.put(turn, true);
+        }
+        if (fromPiece.isRook()) {
+            if (movement.getFrom().getColumn().equals(Column.A)) {
+                hasARookMoved.put(turn, true);
+            } else if (movement.getFrom().getColumn().equals(Column.H)) {
+                hasHRookMoved.put(turn, true);
+            }
+        }
+        if (movement.isWhiteKingSideCastle()) {
+            Square rookSquare = new Square(Column.H, Row.ONE);
+            Piece rookPiece = pieces.get(rookSquare);
+            pieces.remove(rookSquare);
+            pieces.put(new Square(Column.F, Row.ONE), rookPiece);
+        } else if (movement.isWhiteQueenSideCastle()) {
+            Square rookSquare = new Square(Column.A, Row.ONE);
+            Piece rookPiece = pieces.get(rookSquare);
+            pieces.remove(rookSquare);
+            pieces.put(new Square(Column.D, Row.ONE), rookPiece);
+        } else if (movement.isBlackKingSideCastle()) {
+            Square rookSquare = new Square(Column.H, Row.EIGHT);
+            Piece rookPiece = pieces.get(rookSquare);
+            pieces.remove(rookSquare);
+            pieces.put(new Square(Column.F, Row.EIGHT), rookPiece);
+        } else if (movement.isBlackQueenSideCastle()) {
+            Square rookSquare = new Square(Column.A, Row.EIGHT);
+            Piece rookPiece = pieces.get(rookSquare);
+            pieces.remove(rookSquare);
+            pieces.put(new Square(Column.D, Row.EIGHT), rookPiece);
+        }
     }
 
     private boolean canPromote(Piece origin, Movement movement) {
@@ -134,11 +181,85 @@ public class Board {
                 }
             }
         }
+        if (canWhiteCastleKingSide(origin)) {
+            legalMoves.add(new Square(Column.G, Row.ONE));
+        }
+        if (canWhiteCastleQueenSide(origin)) {
+            legalMoves.add(new Square(Column.C, Row.ONE));
+        }
+        if (canBlackCastleKingSide(origin)) {
+            legalMoves.add(new Square(Column.G, Row.EIGHT));
+        }
+        if (canBlackCastleQueenSide(origin)) {
+            legalMoves.add(new Square(Column.C, Row.EIGHT));
+        }
         return legalMoves.stream().filter(square -> {
             Movement temporalMove = new Movement(origin, square);
             Map<Square, Piece> temporalPieces = calculateTemporalMove(temporalMove);
             return !calculateIfItsInCheckForTemporalMove(temporalPieces, turn);
         }).collect(Collectors.toList());
+    }
+
+    private boolean canWhiteCastleKingSide(Square square) {
+        if (!canWhiteCastle(square, hasHRookMoved)) return false;
+        if (pieces.containsKey(new Square(Column.F, Row.ONE))) return false;
+        if (pieces.containsKey(new Square(Column.G, Row.ONE))) return false;
+        Movement temporalMove = new Movement(square, new Square(Column.F, Row.ONE));
+        Map<Square, Piece> temporalPieces = calculateTemporalMove(temporalMove);
+        return !calculateIfItsInCheckForTemporalMove(temporalPieces, turn);
+    }
+
+    private boolean canWhiteCastleQueenSide(Square square) {
+        if (!canWhiteCastle(square, hasARookMoved)) return false;
+        if (pieces.containsKey(new Square(Column.D, Row.ONE))) return false;
+        if (pieces.containsKey(new Square(Column.C, Row.ONE))) return false;
+        Movement temporalMove = new Movement(square, new Square(Column.D, Row.ONE));
+        Map<Square, Piece> temporalPieces = calculateTemporalMove(temporalMove);
+        if (calculateIfItsInCheckForTemporalMove(temporalPieces, turn)) return false;
+
+        temporalMove = new Movement(square, new Square(Column.C, Row.ONE));
+        temporalPieces = calculateTemporalMove(temporalMove);
+        return !calculateIfItsInCheckForTemporalMove(temporalPieces, turn);
+    }
+
+    private boolean canWhiteCastle(Square square, Map<Colors, Boolean> hasRookMoved) {
+        if (!pieces.containsKey(square)) return false;
+        Piece piece = pieces.get(square);
+        if (!piece.isKing()) return false;
+        if (hasKingMoved.get(Colors.WHITE)) return false;
+        if (hasRookMoved.get(Colors.WHITE)) return false;
+        return !calculateIfItsInCheckForTemporalMove(pieces, Colors.WHITE);
+    }
+
+    private boolean canBlackCastleKingSide(Square square) {
+        if (!canBlackCastle(square, hasHRookMoved)) return false;
+        if (pieces.containsKey(new Square(Column.F, Row.EIGHT))) return false;
+        if (pieces.containsKey(new Square(Column.G, Row.EIGHT))) return false;
+        Movement temporalMove = new Movement(square, new Square(Column.F, Row.EIGHT));
+        Map<Square, Piece> temporalPieces = calculateTemporalMove(temporalMove);
+        return !calculateIfItsInCheckForTemporalMove(temporalPieces, turn);
+    }
+
+    private boolean canBlackCastleQueenSide(Square square) {
+        if (!canBlackCastle(square, hasARookMoved)) return false;
+        if (pieces.containsKey(new Square(Column.D, Row.EIGHT))) return false;
+        if (pieces.containsKey(new Square(Column.C, Row.EIGHT))) return false;
+        Movement temporalMove = new Movement(square, new Square(Column.D, Row.EIGHT));
+        Map<Square, Piece> temporalPieces = calculateTemporalMove(temporalMove);
+        if (calculateIfItsInCheckForTemporalMove(temporalPieces, turn)) return false;
+
+        temporalMove = new Movement(square, new Square(Column.C, Row.EIGHT));
+        temporalPieces = calculateTemporalMove(temporalMove);
+        return !calculateIfItsInCheckForTemporalMove(temporalPieces, turn);
+    }
+
+    private boolean canBlackCastle(Square square, Map<Colors, Boolean> hasRookMoved) {
+        if (!pieces.containsKey(square)) return false;
+        Piece piece = pieces.get(square);
+        if (!piece.isKing()) return false;
+        if (hasKingMoved.get(Colors.BLACK)) return false;
+        if (hasRookMoved.get(Colors.BLACK)) return false;
+        return !calculateIfItsInCheckForTemporalMove(pieces, Colors.BLACK);
     }
 
     private Map<Square, Piece> calculateTemporalMove(Movement movement) {

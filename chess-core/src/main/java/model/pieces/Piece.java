@@ -30,6 +30,11 @@ public abstract class Piece {
         return pieces.equals(Pieces.PAWN);
     }
 
+    public boolean isRook() {
+        return pieces.equals(Pieces.ROOK);
+    }
+
+
     public Pieces getPieces() {
         return pieces;
     }

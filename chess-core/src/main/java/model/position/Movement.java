@@ -168,4 +168,24 @@ public class Movement {
         return Math.max(from.getColumn().getPosition(), to.getColumn().getPosition());
     }
 
+    public boolean isWhiteKingSideCastle() {
+        return from.equals(new Square(Column.E, Row.ONE)) &&
+                to.equals(new Square(Column.G, Row.ONE));
+    }
+
+    public boolean isWhiteQueenSideCastle() {
+        return from.equals(new Square(Column.E, Row.ONE)) &&
+                to.equals(new Square(Column.C, Row.ONE));
+    }
+
+    public boolean isBlackKingSideCastle() {
+        return from.equals(new Square(Column.E, Row.EIGHT)) &&
+                to.equals(new Square(Column.G, Row.EIGHT));
+    }
+
+    public boolean isBlackQueenSideCastle() {
+        return from.equals(new Square(Column.E, Row.EIGHT)) &&
+                to.equals(new Square(Column.C, Row.EIGHT));
+    }
+
 }
