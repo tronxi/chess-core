@@ -101,6 +101,10 @@ public class Board {
                 hasHRookMoved.put(turn, true);
             }
         }
+        performCastleMoves(movement);
+    }
+
+    private void performCastleMoves(Movement movement) {
         if (movement.isWhiteKingSideCastle()) {
             Square rookSquare = new Square(Column.H, Row.ONE);
             Piece rookPiece = pieces.get(rookSquare);
